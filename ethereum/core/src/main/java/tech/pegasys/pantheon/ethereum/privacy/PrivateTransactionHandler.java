@@ -96,7 +96,7 @@ public class PrivateTransactionHandler {
       return BytesValue.wrap(receiveResponse.getPrivacyGroupId().getBytes(Charsets.UTF_8))
           .toString();
     } catch (IOException e) {
-      LOG.error("Failed to store private transaction in enclave", e);
+      LOG.error("Failed to retrieve private transaction in enclave", e);
       throw e;
     }
   }
