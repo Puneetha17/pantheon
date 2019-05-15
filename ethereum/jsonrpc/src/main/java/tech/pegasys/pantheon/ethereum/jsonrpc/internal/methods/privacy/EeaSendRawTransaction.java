@@ -98,7 +98,7 @@ public class EeaSendRawTransaction implements JsonRpcMethod {
     try {
       privacyGroupId =
           privateTransactionHandler.getPrivacyGroup(
-              enclaveKey, privateTransaction.getPrivateFrom().toString());
+              enclaveKey, privateTransaction.getPrivateFrom());
     } catch (final IOException e) {
       return new JsonRpcErrorResponse(request.getId(), JsonRpcError.ENCLAVE_ERROR);
     }

@@ -87,12 +87,14 @@ public class PrivateTransactionHandler {
     }
   }
 
-  public String getPrivacyGroup(final String key, final String from) throws IOException {
+  public String getPrivacyGroup(final String key, final BytesValue from) throws IOException {
+    final ReceiveRequest receiveRequest = new ReceiveRequest(key, BytesValues.asString(from));
+    LOG.info("Getting privacy group for {}", BytesValues.asString(from));
     final ReceiveResponse receiveResponse;
-    final ReceiveRequest receiveRequest = new ReceiveRequest(key, from);
     try {
       receiveResponse = enclave.receive(receiveRequest);
-      return receiveResponse.getPrivacyGroupId();
+      return BytesValue.wrap(receiveResponse.getPrivacyGroupId().getBytes(Charsets.UTF_8))
+          .toString();
     } catch (IOException e) {
       LOG.error("Failed to store private transaction in enclave", e);
       throw e;
@@ -119,6 +121,7 @@ public class PrivateTransactionHandler {
       final PrivateTransaction privateTransaction, final String privacyGroupId) {
     final long actualNonce = privateTransaction.getNonce();
     final long expectedNonce = getSenderNonce(privateTransaction, privacyGroupId);
+    LOG.info("Validating actual nonce {} with expected nonce {}", actualNonce, expectedNonce);
     if (expectedNonce > actualNonce) {
       return ValidationResult.invalid(
           PRIVATE_NONCE_TOO_LOW,
@@ -179,7 +182,7 @@ public class PrivateTransactionHandler {
                     .orElse(Account.DEFAULT_NONCE))
         .orElseGet(
             () -> {
-              LOG.debug("Failed to find private state for privacy group id {}", privacyGroupId);
+              LOG.trace("Failed to find private state for privacy group id {}", privacyGroupId);
               return Account.DEFAULT_NONCE;
             });
   }

@@ -19,6 +19,7 @@ import tech.pegasys.pantheon.enclave.types.SendResponse;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.MediaType;
@@ -34,6 +35,9 @@ public class Enclave {
   private static final ObjectMapper objectMapper = new ObjectMapper();
   private static final MediaType JSON = MediaType.parse("application/json");
   private static final MediaType ORION = MediaType.get("application/vnd.orion.v1+json");
+
+  private static final int RETRIES = 3;
+  private static final int POLL_TIME_SECONDS = 3;
 
   private final URI enclaveUri;
   private final OkHttpClient client;
@@ -73,11 +77,18 @@ public class Enclave {
   }
 
   private <T> T executePost(final Request request, final Class<T> responseType) throws IOException {
-    try (Response response = client.newCall(request).execute()) {
-      return objectMapper.readValue(response.body().string(), responseType);
-    } catch (IOException e) {
-      LOG.error("Enclave failed to execute ", request);
-      throw new IOException("Enclave failed to execute post", e);
+    for (int i = 0; i < RETRIES; i++) {
+      try (Response response = client.newCall(request).execute()) {
+        return objectMapper.readValue(response.body().string(), responseType);
+      } catch (IOException e) {
+        LOG.error("Enclave failed to execute {}", request);
+      }
+      try {
+        TimeUnit.SECONDS.sleep(POLL_TIME_SECONDS);
+      } catch (InterruptedException e) {
+        LOG.error("Failed to wait after failed post at iteration {}", i);
+      }
     }
+    throw new IOException("Enclave failed to execute post after 3 tries");
   }
 }
