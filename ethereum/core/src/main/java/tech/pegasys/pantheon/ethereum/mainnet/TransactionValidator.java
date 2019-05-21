@@ -58,6 +58,7 @@ public interface TransactionValidator {
     EXCEEDS_BLOCK_GAS_LIMIT,
     TX_SENDER_NOT_AUTHORIZED,
     CHAIN_HEAD_WORLD_STATE_NOT_AVAILABLE,
+    // Private Transaction Invalid Reasons
     PRIVATE_TRANSACTION_FAILED,
     PRIVATE_NONCE_TOO_LOW,
     INCORRECT_PRIVATE_NONCE

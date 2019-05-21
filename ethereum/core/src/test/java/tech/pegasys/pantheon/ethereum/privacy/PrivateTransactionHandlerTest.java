@@ -62,25 +62,6 @@ public class PrivateTransactionHandlerTest {
   PrivateTransactionHandler privateTransactionHandler;
   PrivateTransactionHandler brokenPrivateTransactionHandler;
 
-  private static final PrivateTransaction VALID_PRIVATE_TRANSACTION =
-      PrivateTransaction.builder()
-          .nonce(0)
-          .gasPrice(Wei.of(1000))
-          .gasLimit(3000000)
-          .to(Address.fromHexString("0x627306090abab3a6e1400e9345bc60c78a8bef57"))
-          .value(Wei.ZERO)
-          .payload(BytesValue.fromHexString("0x"))
-          .sender(Address.fromHexString("0xfe3b557e8fb62b89f4916b721be55ceb828dbd73"))
-          .chainId(BigInteger.valueOf(2018))
-          .privateFrom(
-              BytesValue.wrap("A1aVtMxLCUHmBVHXoZzzBgPbW/wj5axDpW9X8l91SGo=".getBytes(UTF_8)))
-          .privateFor(
-              Lists.newArrayList(
-                  BytesValue.wrap("A1aVtMxLCUHmBVHXoZzzBgPbW/wj5axDpW9X8l91SGo=".getBytes(UTF_8)),
-                  BytesValue.wrap("Ko2bVqD+nNlNYL5EE7y3IdOnviftjiizpjRt+HTuFBs=".getBytes(UTF_8))))
-          .restriction(Restriction.RESTRICTED)
-          .signAndBuild(KEY_PAIR);
-
   private static final Transaction PUBLIC_TRANSACTION =
       Transaction.builder()
           .nonce(0)
@@ -96,7 +77,7 @@ public class PrivateTransactionHandlerTest {
   Enclave mockEnclave() throws IOException {
     Enclave mockEnclave = mock(Enclave.class);
     SendResponse response = new SendResponse(TRANSACTION_KEY);
-    ReceiveResponse receiveResponse = new ReceiveResponse(new byte[0], "0x23dae452");
+    ReceiveResponse receiveResponse = new ReceiveResponse(new byte[0], "mock");
     when(mockEnclave.send(any(SendRequest.class))).thenReturn(response);
     when(mockEnclave.receive(any(ReceiveRequest.class))).thenReturn(receiveResponse);
     return mockEnclave;

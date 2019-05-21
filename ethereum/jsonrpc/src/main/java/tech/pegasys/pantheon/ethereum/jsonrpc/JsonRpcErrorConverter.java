@@ -34,6 +34,7 @@ public class JsonRpcErrorConverter {
         return JsonRpcError.EXCEEDS_BLOCK_GAS_LIMIT;
       case TX_SENDER_NOT_AUTHORIZED:
         return JsonRpcError.TX_SENDER_NOT_AUTHORIZED;
+        // Private Transaction Invalid Reasons
       case CHAIN_HEAD_WORLD_STATE_NOT_AVAILABLE:
         return JsonRpcError.CHAIN_HEAD_WORLD_STATE_NOT_AVAILABLE;
       case PRIVATE_NONCE_TOO_LOW:

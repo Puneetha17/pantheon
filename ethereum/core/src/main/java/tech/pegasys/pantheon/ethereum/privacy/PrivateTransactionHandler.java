@@ -177,13 +177,13 @@ public class PrivateTransactionHandler {
                           if (maybePrivateSender != null) {
                             return maybePrivateSender.getNonce();
                           }
+                          // account has not interacted in this private state
                           return Account.DEFAULT_NONCE;
                         })
+                    // private state does not exist
                     .orElse(Account.DEFAULT_NONCE))
-        .orElseGet(
-            () -> {
-              LOG.trace("Failed to find private state for privacy group id {}", privacyGroupId);
-              return Account.DEFAULT_NONCE;
-            });
+        .orElse(
+            // private state does not exist
+            Account.DEFAULT_NONCE);
   }
 }
