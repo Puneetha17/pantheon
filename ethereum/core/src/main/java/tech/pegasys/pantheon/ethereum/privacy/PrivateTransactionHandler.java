@@ -89,7 +89,7 @@ public class PrivateTransactionHandler {
 
   public String getPrivacyGroup(final String key, final BytesValue from) throws IOException {
     final ReceiveRequest receiveRequest = new ReceiveRequest(key, BytesValues.asString(from));
-    LOG.info("Getting privacy group for {}", BytesValues.asString(from));
+    LOG.debug("Getting privacy group for {}", BytesValues.asString(from));
     final ReceiveResponse receiveResponse;
     try {
       receiveResponse = enclave.receive(receiveRequest);
@@ -121,7 +121,7 @@ public class PrivateTransactionHandler {
       final PrivateTransaction privateTransaction, final String privacyGroupId) {
     final long actualNonce = privateTransaction.getNonce();
     final long expectedNonce = getSenderNonce(privateTransaction, privacyGroupId);
-    LOG.info("Validating actual nonce {} with expected nonce {}", actualNonce, expectedNonce);
+    LOG.debug("Validating actual nonce {} with expected nonce {}", actualNonce, expectedNonce);
     if (expectedNonce > actualNonce) {
       return ValidationResult.invalid(
           PRIVATE_NONCE_TOO_LOW,
